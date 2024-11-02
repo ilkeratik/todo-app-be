@@ -4,6 +4,7 @@ import com.ilkeratik.todo.application.be.data.entity.ToDo;
 import com.ilkeratik.todo.application.be.data.enumeration.Status;
 import com.ilkeratik.todo.application.be.web.model.request.CreateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.response.ToDoDTO;
+import java.util.List;
 
 public class ToDoMapper {
 
@@ -16,7 +17,7 @@ public class ToDoMapper {
     return INSTANCE;
   }
 
-  public ToDo toEntity(CreateToDoRequest createToDoRequest) {
+  public ToDo toEntity(CreateToDoRequest createToDoRequest, String userId) {
     final ToDo toDo = new ToDo();
     toDo.setTitle(createToDoRequest.getTitle());
     toDo.setDescription(createToDoRequest.getDescription());
@@ -25,6 +26,7 @@ public class ToDoMapper {
     toDo.setDeadline(createToDoRequest.getDeadline());
     toDo.setPriority(createToDoRequest.getPriority());
     toDo.setImage(createToDoRequest.getImage());
+    toDo.setUserId(userId);
     return toDo;
   }
 
@@ -37,7 +39,12 @@ public class ToDoMapper {
     toDoDTO.setDeadline(toDoEntity.getDeadline());
     toDoDTO.setPriority(toDoEntity.getPriority());
     toDoDTO.setImage(toDoEntity.getImage());
+    toDoDTO.setCreatedAt(toDoEntity.getCreatedAt());
+    toDoDTO.setUpdatedAt(toDoEntity.getUpdatedAt());
     return toDoDTO;
   }
 
+  public List<ToDoDTO> toDTOList(List<ToDo> toDoEntityList) {
+    return toDoEntityList.stream().map(this::toDTO).toList();
+  }
 }

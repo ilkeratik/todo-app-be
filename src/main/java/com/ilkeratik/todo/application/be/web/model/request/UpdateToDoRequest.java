@@ -1,4 +1,4 @@
-package com.ilkeratik.todo.application.be.web.model.response;
+package com.ilkeratik.todo.application.be.web.model.request;
 
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ToDoDTO {
+public class UpdateToDoRequest {
 
   private String title;
   private String description;
@@ -17,5 +17,4 @@ public class ToDoDTO {
   private LocalDateTime deadline;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
-
 }
