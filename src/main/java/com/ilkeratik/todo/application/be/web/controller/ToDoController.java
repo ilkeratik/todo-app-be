@@ -1,5 +1,6 @@
 package com.ilkeratik.todo.application.be.web.controller;
 
+import com.ilkeratik.todo.application.be.common.exception.ResourceNotFoundException;
 import com.ilkeratik.todo.application.be.domain.todo.service.ToDoService;
 import com.ilkeratik.todo.application.be.web.model.request.CreateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.request.UpdateToDoRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ToDoController {
 
+  public static final String TO_DO_ITEM_NOT_FOUND_WITH_ID = "To do item not found with id: ";
   private final ToDoService toDoService;
 
   @PostMapping()
@@ -40,7 +42,7 @@ public class ToDoController {
   public ResponseEntity<ToDoDTO> get(@PathVariable Long id) {
     ToDoDTO response = toDoService.get(id);
     if (response == null) {
-      return ResponseEntity.notFound().build();
+      throw new ResourceNotFoundException(TO_DO_ITEM_NOT_FOUND_WITH_ID + id);
     }
     return ResponseEntity.ok(response);
   }
@@ -58,7 +60,7 @@ public class ToDoController {
       @RequestBody UpdateToDoRequest updateToDoRequest) {
     ToDoDTO response = toDoService.update(id, updateToDoRequest);
     if (response == null) {
-      return ResponseEntity.notFound().build();
+      throw new ResourceNotFoundException(TO_DO_ITEM_NOT_FOUND_WITH_ID + id);
     }
     return ResponseEntity.ok(response);
   }
@@ -67,9 +69,9 @@ public class ToDoController {
   @Operation(summary = "Delete a ToDo", description = "Deletes a ToDo item.")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     if (toDoService.delete(id)) {
-      return ResponseEntity.ok().build();
+      throw new ResourceNotFoundException(TO_DO_ITEM_NOT_FOUND_WITH_ID + id);
     } else {
-      return ResponseEntity.notFound().build();
+      return ResponseEntity.ok().build();
     }
   }
 

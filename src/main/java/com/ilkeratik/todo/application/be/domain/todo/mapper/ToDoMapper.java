@@ -1,4 +1,4 @@
-package com.ilkeratik.todo.application.be.domain.todo.service.mapper;
+package com.ilkeratik.todo.application.be.domain.todo.mapper;
 
 import com.ilkeratik.todo.application.be.domain.todo.data.entity.ToDo;
 import com.ilkeratik.todo.application.be.domain.todo.data.enumeration.Status;

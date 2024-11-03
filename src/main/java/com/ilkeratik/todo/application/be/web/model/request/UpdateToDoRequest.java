@@ -15,6 +15,4 @@ public class UpdateToDoRequest {
   private String status;
   private String category;
   private LocalDateTime deadline;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
 }
