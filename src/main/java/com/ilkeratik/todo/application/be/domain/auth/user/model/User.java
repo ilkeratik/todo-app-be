@@ -1,4 +1,4 @@
-package com.ilkeratik.todo.application.be.domain.user.model;
+package com.ilkeratik.todo.application.be.domain.auth.user.model;
 
 import lombok.Getter;
 import lombok.Setter;

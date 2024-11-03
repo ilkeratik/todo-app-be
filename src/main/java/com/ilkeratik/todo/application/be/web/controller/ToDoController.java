@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/todo")
-@Tag(name = "ToDo", description = "Operations to manage ToDos")
+@Tag(name = "To do", description = "Operations to manage To do's")
 @RequiredArgsConstructor
 public class ToDoController {
 
@@ -30,7 +30,7 @@ public class ToDoController {
   private final ToDoService toDoService;
 
   @PostMapping()
-  @Operation(summary = "Create a ToDo", description = "Creates a new ToDo item.")
+  @Operation(summary = "Create a To do item", description = "Creates a new To do item.")
   public ResponseEntity<CreateToDoResponse> create(
       @RequestBody CreateToDoRequest createToDoRequest) {
     CreateToDoResponse response = toDoService.create(createToDoRequest);
@@ -38,7 +38,7 @@ public class ToDoController {
   }
 
   @GetMapping("/{id}")
-  @Operation(summary = "Get a ToDo by ID", description = "Retrieves a ToDo item by its ID.")
+  @Operation(summary = "Get a To do item by ID", description = "Retrieves a To do item by its ID.")
   public ResponseEntity<ToDoDTO> get(@PathVariable Long id) {
     ToDoDTO response = toDoService.get(id);
     if (response == null) {
@@ -48,14 +48,14 @@ public class ToDoController {
   }
 
   @GetMapping()
-  @Operation(summary = "Get all ToDos of a user", description = "Retrieves all ToDos using the user ID.")
+  @Operation(summary = "Get all To do's of a user", description = "Retrieves all To do's using the user ID.")
   public ResponseEntity<List<ToDoDTO>> getAll() {
     List<ToDoDTO> response = toDoService.getAll();
     return ResponseEntity.ok(response);
   }
 
   @PatchMapping("/{id}")
-  @Operation(summary = "Update a ToDo", description = "Updates a ToDo item.")
+  @Operation(summary = "Update a To do item", description = "Updates a To do item.")
   public ResponseEntity<ToDoDTO> get(@PathVariable Long id,
       @RequestBody UpdateToDoRequest updateToDoRequest) {
     ToDoDTO response = toDoService.update(id, updateToDoRequest);
@@ -66,7 +66,7 @@ public class ToDoController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(summary = "Delete a ToDo", description = "Deletes a ToDo item.")
+  @Operation(summary = "Delete a To do", description = "Deletes a To do item.")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     if (toDoService.delete(id)) {
       throw new ResourceNotFoundException(TO_DO_ITEM_NOT_FOUND_WITH_ID + id);

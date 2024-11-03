@@ -1,4 +1,4 @@
-package com.ilkeratik.todo.application.be.domain.user.service;
+package com.ilkeratik.todo.application.be.domain.auth.user.service;
 
 import com.ilkeratik.todo.application.be.common.exception.AuthenticationException;
 import org.springframework.security.core.Authentication;

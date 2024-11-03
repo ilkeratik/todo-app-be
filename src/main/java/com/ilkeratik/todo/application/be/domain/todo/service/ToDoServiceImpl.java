@@ -1,11 +1,11 @@
 package com.ilkeratik.todo.application.be.domain.todo.service;
 
 import com.ilkeratik.todo.application.be.common.exception.UnauthorizedResourceException;
+import com.ilkeratik.todo.application.be.domain.auth.user.service.UserService;
 import com.ilkeratik.todo.application.be.domain.todo.data.entity.ToDo;
 import com.ilkeratik.todo.application.be.domain.todo.data.enumeration.Status;
 import com.ilkeratik.todo.application.be.domain.todo.data.repository.ToDoRepository;
 import com.ilkeratik.todo.application.be.domain.todo.mapper.ToDoMapper;
-import com.ilkeratik.todo.application.be.domain.user.service.UserService;
 import com.ilkeratik.todo.application.be.web.model.request.CreateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.request.UpdateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.response.CreateToDoResponse;
