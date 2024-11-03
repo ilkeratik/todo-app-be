@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: todo-application-be
+  datasource:
+    url: ENC(Xl7nZkM/9+/Pa9lZVul33ztdak/o1ftOQ54N89WaJS1W0NASsObuQ0Fnz7tnIj7cwkF7rOexd7kqXvMvjhKt2N/CentxD7BuZtL9775VVYBg1riXs5zYRf6diFdkVwbDYZ10Xu7Kk45oNFFR8mtLpQ==)
+    username: ENC(qZQUVLg2zqcVT0pwkhh7UP4H4tys+Bf89EZALfW6MgEJAQOdXKbuoCqHiM6dYc2L)
+    password: ENC(fzfYv87OWEziKZAXbInb/w3LfqVsBLMQxeuBMR4sk0RqHGixgb9eiQVKyV+wi1Fp)
+    hikari:
+      connection-test-query: SELECT 1
+      validation-timeout: 5000
+      minimum-idle: 2
+      maximum-pool-size: 5
+      connection-timeout: 30000
+      maxLifeTime: 600000
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ENC(MvMOPRbcirdJZHm9+Gb7rXmWzzf2UE2cnQ9FTqNbKIicMy/TUlvZ7h0x/UvhM0FG+Oevu2N7sFTW0/tEerHoQYJW8noN8tI5qMDn5rDDxt6F3YTKcjTSbTp3+w2H8Knq)
+          jwk-set-uri: ENC(faNU/Tb1RiPShe5ixTauqOGJYny3ycc3bCMRgH0wFbmmzIdhNTkWWSO6yA9lLdy1FDLSUPuBWiF6NetmXRyEc6+67bTPDykCrW5WDQoJv+ZvP34eZFRg/GS7awbA+LU3RmSMaBu1C6QHIBdE8sGh4/iy56TCaSMiBVHqN2QJnxM=)
+
+cognito:
+  client-id: ENC(rTWEFTN3RVnTQa/AKde7bsVj0W4s6j4TOBbq0fxbpQuEUBMHHhfkO6k03Ft+VF0UuxyHQWlHsjd1tWlf6pw5Jw==)
+  client-secret: ENC(z8Dtlh7f7mJSPkXIoUPTbMrXhPT85hpfSO0d+LT0F6UoDlmZd9UADz1rgXkrxCQUzkc9WCFCWFs9zA7XPxeGeDWCqxKCZXL182hY4jGmETXAYr9Igbaa4mofXosRWW71)
+  domain: ENC(4q2lnJtjpcofiuEOC0pcB656d7YpFL+nluxnOhnGD0vXVrjyymzHOAD712vIafQrbMC87FFXs7LduZMkgAvHBhqphgTyH7vcFUU3FBKBiSA=)
+
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithHMACSHA512AndAES_256
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+    string-output-type: base64
