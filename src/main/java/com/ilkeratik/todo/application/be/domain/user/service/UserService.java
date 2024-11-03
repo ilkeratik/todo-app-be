@@ -1,4 +1,4 @@
-package com.ilkeratik.todo.application.be.service.user;
+package com.ilkeratik.todo.application.be.domain.user.service;
 
 public interface UserService {
 

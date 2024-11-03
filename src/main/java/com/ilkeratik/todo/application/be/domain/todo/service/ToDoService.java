@@ -1,4 +1,4 @@
-package com.ilkeratik.todo.application.be.service.todo;
+package com.ilkeratik.todo.application.be.domain.todo.service;
 
 import com.ilkeratik.todo.application.be.web.model.request.CreateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.request.UpdateToDoRequest;

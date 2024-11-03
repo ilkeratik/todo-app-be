@@ -1,7 +1,7 @@
-package com.ilkeratik.todo.application.be.service.todo.mapper;
+package com.ilkeratik.todo.application.be.domain.todo.service.mapper;
 
-import com.ilkeratik.todo.application.be.data.entity.ToDo;
-import com.ilkeratik.todo.application.be.data.enumeration.Status;
+import com.ilkeratik.todo.application.be.domain.todo.data.entity.ToDo;
+import com.ilkeratik.todo.application.be.domain.todo.data.enumeration.Status;
 import com.ilkeratik.todo.application.be.web.model.request.CreateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.response.ToDoDTO;
 import java.util.List;

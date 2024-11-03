@@ -1,6 +1,6 @@
 package com.ilkeratik.todo.application.be.web.controller;
 
-import com.ilkeratik.todo.application.be.service.todo.ToDoService;
+import com.ilkeratik.todo.application.be.domain.todo.service.ToDoService;
 import com.ilkeratik.todo.application.be.web.model.request.CreateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.request.UpdateToDoRequest;
 import com.ilkeratik.todo.application.be.web.model.response.CreateToDoResponse;

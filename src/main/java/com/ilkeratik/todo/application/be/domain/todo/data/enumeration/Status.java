@@ -1,4 +1,4 @@
-package com.ilkeratik.todo.application.be.data.enumeration;
+package com.ilkeratik.todo.application.be.domain.todo.data.enumeration;
 
 public enum Status {
   TO_DO,

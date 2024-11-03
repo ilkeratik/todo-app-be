@@ -1,6 +1,6 @@
-package com.ilkeratik.todo.application.be.data.entity;
+package com.ilkeratik.todo.application.be.domain.todo.data.entity;
 
-import com.ilkeratik.todo.application.be.data.enumeration.Status;
+import com.ilkeratik.todo.application.be.domain.todo.data.enumeration.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -29,7 +29,7 @@ public class ToDo {
   private Long id;
 
   private String userId;
-  
+
   private String title;
 
   private String description;
