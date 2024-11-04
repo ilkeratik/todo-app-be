@@ -2,7 +2,7 @@ spring:
   application:
     name: todo-application-be
   datasource:
-    url: ENC(Xl7nZkM/9+/Pa9lZVul33ztdak/o1ftOQ54N89WaJS1W0NASsObuQ0Fnz7tnIj7cwkF7rOexd7kqXvMvjhKt2N/CentxD7BuZtL9775VVYBg1riXs5zYRf6diFdkVwbDYZ10Xu7Kk45oNFFR8mtLpQ==)
+    url: ENC(h8R8XO4y4mlyzdrshnL+8e8YNl4WumNh245vNPs1mPkeQDe9p5HlC5SklUUrOLGf/534ccMTepAiAKxwQ/yv3poSDGwVhPYfFLil2vCJLdD2JBpYsUEmkbMTrlzLaLjINEnj+ZI+DWV70nI/4gRUkQ==)
     username: ENC(qZQUVLg2zqcVT0pwkhh7UP4H4tys+Bf89EZALfW6MgEJAQOdXKbuoCqHiM6dYc2L)
     password: ENC(fzfYv87OWEziKZAXbInb/w3LfqVsBLMQxeuBMR4sk0RqHGixgb9eiQVKyV+wi1Fp)
     hikari:
@@ -30,9 +30,9 @@ springdoc:
   default-produces-media-type: application/json
 
 cognito:
-  client-id: ENC(rTWEFTN3RVnTQa/AKde7bsVj0W4s6j4TOBbq0fxbpQuEUBMHHhfkO6k03Ft+VF0UuxyHQWlHsjd1tWlf6pw5Jw==)
-  client-secret: ENC(z8Dtlh7f7mJSPkXIoUPTbMrXhPT85hpfSO0d+LT0F6UoDlmZd9UADz1rgXkrxCQUzkc9WCFCWFs9zA7XPxeGeDWCqxKCZXL182hY4jGmETXAYr9Igbaa4mofXosRWW71)
-  domain: ENC(4q2lnJtjpcofiuEOC0pcB656d7YpFL+nluxnOhnGD0vXVrjyymzHOAD712vIafQrbMC87FFXs7LduZMkgAvHBhqphgTyH7vcFUU3FBKBiSA=)
+  client-id: ENC(qe1RRABknyyqt63iZwYPskWu6HBjvDfMt+mI5Z0/LECelmtvpBU/N8NFED09YcFtus/J4HmLMaXl+UuSoUuK9Q==)
+  client-secret: ENC(YM4znh3oAsO3W22F/NcW0tTnsjWyqZJS8kW03XQ4eAEu8aVzX8QRrK6X26qYeaAMtSloN6qPxDimqmLCGrn5g3PfMoXbfocswPEHyaPChw1U9TsC9H4OGxnkW3VwsTcX)
+  domain: ENC(y6JH6ypGYH5o4NbwKPrW7tbS4Oa201Bm0q8Yf0dPWf1ZSYLkuJFtzi6b2tfKiTYBX5Ky4/T8Nj1B8EZPf6s4wkIwRgi83qA8ol70Cn+K3ys=)
 
 
 jasypt:
