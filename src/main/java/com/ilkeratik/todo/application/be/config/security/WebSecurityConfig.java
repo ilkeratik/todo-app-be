@@ -23,7 +23,7 @@ public class WebSecurityConfig {
         // Disable session creation
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth ->
-            auth.requestMatchers("/.well-known/pki-validation/*", "/v3/api-docs/**",
+            auth.requestMatchers("/api/v1/auth/token", "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html")
                 .permitAll()
