@@ -26,6 +26,9 @@ spring:
           issuer-uri: ENC(MvMOPRbcirdJZHm9+Gb7rXmWzzf2UE2cnQ9FTqNbKIicMy/TUlvZ7h0x/UvhM0FG+Oevu2N7sFTW0/tEerHoQYJW8noN8tI5qMDn5rDDxt6F3YTKcjTSbTp3+w2H8Knq)
           jwk-set-uri: ENC(faNU/Tb1RiPShe5ixTauqOGJYny3ycc3bCMRgH0wFbmmzIdhNTkWWSO6yA9lLdy1FDLSUPuBWiF6NetmXRyEc6+67bTPDykCrW5WDQoJv+ZvP34eZFRg/GS7awbA+LU3RmSMaBu1C6QHIBdE8sGh4/iy56TCaSMiBVHqN2QJnxM=)
 
+springdoc:
+  default-produces-media-type: application/json
+
 cognito:
   client-id: ENC(rTWEFTN3RVnTQa/AKde7bsVj0W4s6j4TOBbq0fxbpQuEUBMHHhfkO6k03Ft+VF0UuxyHQWlHsjd1tWlf6pw5Jw==)
   client-secret: ENC(z8Dtlh7f7mJSPkXIoUPTbMrXhPT85hpfSO0d+LT0F6UoDlmZd9UADz1rgXkrxCQUzkc9WCFCWFs9zA7XPxeGeDWCqxKCZXL182hY4jGmETXAYr9Igbaa4mofXosRWW71)

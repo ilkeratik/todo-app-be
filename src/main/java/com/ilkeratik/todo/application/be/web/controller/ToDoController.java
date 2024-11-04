@@ -55,7 +55,7 @@ public class ToDoController {
   }
 
   @PatchMapping("/{id}")
-  @Operation(summary = "Update a To do item", description = "Updates a To do item.")
+  @Operation(summary = "Update a To do item by ID", description = "Updates a To do item.")
   public ResponseEntity<ToDoDTO> get(@PathVariable Long id,
       @RequestBody UpdateToDoRequest updateToDoRequest) {
     ToDoDTO response = toDoService.update(id, updateToDoRequest);
@@ -66,7 +66,7 @@ public class ToDoController {
   }
 
   @DeleteMapping("/{id}")
-  @Operation(summary = "Delete a To do", description = "Deletes a To do item.")
+  @Operation(summary = "Delete a To do by ID", description = "Deletes a To do item.")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     if (toDoService.delete(id)) {
       throw new ResourceNotFoundException(TO_DO_ITEM_NOT_FOUND_WITH_ID + id);

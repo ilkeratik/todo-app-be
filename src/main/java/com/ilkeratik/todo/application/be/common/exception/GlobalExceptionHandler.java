@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ex.getMessage(),
         request.getDescription(false)
     );
-    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
   }
 
   @ExceptionHandler(UnauthorizedResourceException.class)
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ex.getMessage(),
         request.getDescription(false)
     );
-    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(ResourceNotFoundException.class)

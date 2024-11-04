@@ -32,6 +32,7 @@ public class ToDoMapper {
 
   public ToDoDTO toDTO(ToDo toDoEntity) {
     ToDoDTO toDoDTO = new ToDoDTO();
+    toDoDTO.setId(toDoEntity.getId());
     toDoDTO.setTitle(toDoEntity.getTitle());
     toDoDTO.setDescription(toDoEntity.getDescription());
     toDoDTO.setStatus(toDoEntity.getStatus().name());
