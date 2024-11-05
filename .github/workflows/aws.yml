@@ -27,14 +27,6 @@ jobs:
     - name: Build with Maven
       run: mvn clean package -DskipTests
       
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-        
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
@@ -53,27 +45,3 @@ jobs:
         docker build -t $DOCKERHUB_REPOSITORY:$IMAGE_TAG .
         docker push $DOCKERHUB_REPOSITORY:$IMAGE_TAG
         echo "image=$DOCKERHUB_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-        
-    - name: Fill in the task definition template
-      run: |
-        sed -e "s|\${CONTAINER_NAME}|${{ secrets.CONTAINER_NAME }}|g" \
-            -e "s|\${EXECUTION_ROLE_ARN}|${{ secrets.EXECUTION_ROLE_ARN }}|g" \
-            -e "s|\${JASYPT_ENCRYPTOR_PASSWORD}|${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}|g" \
-            -e "s|\${TASK_FAMILY_NAME}|${{ secrets.TASK_FAMILY_NAME }}|g" \
-            .aws/task-definition-template.json > .aws/task-definition.json
-            
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: .aws/task-definition.json
-        container-name: ${{ secrets.CONTAINER_NAME }}
-        image: ${{ steps.build-image.outputs.image }}
-
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ${{ secrets.ECS_SERVICE }}
-        cluster: ${{ secrets.ECS_CLUSTER }}
-        wait-for-service-stability: true
