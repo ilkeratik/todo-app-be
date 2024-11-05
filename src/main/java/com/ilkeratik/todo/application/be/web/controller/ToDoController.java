@@ -48,7 +48,7 @@ public class ToDoController {
   }
 
   @GetMapping()
-  @Operation(summary = "Get all To do's of a user", description = "Retrieves all To do's using the user ID.")
+  @Operation(summary = "Get all To do's of a user", description = "Retrieves all To do's using the user ID from the access token.")
   public ResponseEntity<List<ToDoDTO>> getAll() {
     List<ToDoDTO> response = toDoService.getAll();
     return ResponseEntity.ok(response);
@@ -68,7 +68,7 @@ public class ToDoController {
   @DeleteMapping("/{id}")
   @Operation(summary = "Delete a To do by ID", description = "Deletes a To do item.")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
-    if (toDoService.delete(id)) {
+    if (!toDoService.delete(id)) {
       throw new ResourceNotFoundException(TO_DO_ITEM_NOT_FOUND_WITH_ID + id);
     } else {
       return ResponseEntity.ok().build();
