@@ -84,6 +84,7 @@ jobs:
         sed -e "s|\${CONTAINER_NAME}|${{ secrets.CONTAINER_NAME }}|g" \
             -e "s|\${EXECUTION_ROLE_ARN}|${{ secrets.EXECUTION_ROLE_ARN }}|g" \
             -e "s|\${JASYPT_ENCRYPTOR_PASSWORD}|${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}|g" \
+            -e "s|\${TASK_FAMILY_NAME}|${{ secrets.TASK_FAMILY_NAME }}|g" \
             .aws/task-definition-template.json > .aws/task-definition.json
             
     - name: Fill in the new image ID in the Amazon ECS task definition
