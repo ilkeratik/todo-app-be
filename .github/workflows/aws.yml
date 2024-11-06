@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECS
+name: Image to docker hub 
 
 on:
   push:
