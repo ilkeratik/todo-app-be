@@ -2,9 +2,6 @@ spring:
   application:
     name: todo-application-be
   datasource:
-    url: ENC(h8R8XO4y4mlyzdrshnL+8e8YNl4WumNh245vNPs1mPkeQDe9p5HlC5SklUUrOLGf/534ccMTepAiAKxwQ/yv3poSDGwVhPYfFLil2vCJLdD2JBpYsUEmkbMTrlzLaLjINEnj+ZI+DWV70nI/4gRUkQ==)
-    username: ENC(qZQUVLg2zqcVT0pwkhh7UP4H4tys+Bf89EZALfW6MgEJAQOdXKbuoCqHiM6dYc2L)
-    password: ENC(fzfYv87OWEziKZAXbInb/w3LfqVsBLMQxeuBMR4sk0RqHGixgb9eiQVKyV+wi1Fp)
     hikari:
       connection-test-query: SELECT 1
       validation-timeout: 5000

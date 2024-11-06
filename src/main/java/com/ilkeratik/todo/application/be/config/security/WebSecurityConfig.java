@@ -29,7 +29,7 @@ public class WebSecurityConfig {
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth ->
             auth.requestMatchers("/.well-known/pki-validation/A8C2A26F916A31CDDD82CF7E7F065861.txt",
-                    "/api/v1/auth/token", "/v3/api-docs/**",
+                    "/api/v1/auth/token", "/v3/api-docs/**", "/actuator/health",
                     "/swagger-ui/**",
                     "/swagger-ui.html")
                 .permitAll()
