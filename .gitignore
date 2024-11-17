@@ -31,3 +31,19 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+*.hcl
+*.sql
+
+.DS_Store
