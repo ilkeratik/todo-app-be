@@ -44,11 +44,7 @@ public class WebSecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(
-        Arrays.asList(
-            "http://localhost:5000",
-            "http://localhost:5001",
-            "https://todo-app-ui-eosin.vercel.app"));
+    configuration.setAllowedOriginPatterns(List.of("*"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);
