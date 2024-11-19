@@ -2,9 +2,7 @@
 provider "aws" {
   region = var.aws_region
 }
-provider "vercel" {
-  api_token = var.vercel_api_token
-}
+
 # --------------------------------- VPC and subnets ----------------------------------
 resource "aws_vpc" "main" {
   cidr_block           = "${var.vpc_ip_prefix}.0.0/16"
@@ -172,7 +170,8 @@ resource "aws_db_instance" "mysql" {
   }
 }
 
-# --------------------------------- ECS Cluster ---------------------------------
+# --------------------------------- Backend APP ---------------------------------
+#ECS Cluster
 resource "aws_ecs_cluster" "main" {
   name = var.cluster_name
 }
@@ -210,7 +209,6 @@ resource "aws_security_group" "ecs_tasks" {
   }
 }
 
-
 # Login to docker hub, if not authenticated the pull rate limit is 100 pulls per 6 hours
 resource "aws_secretsmanager_secret" "docker_hub" {
   name                    = "docker-hub-credentials"
@@ -234,7 +232,7 @@ resource "aws_cloudwatch_log_group" "ecs_logs" {
   }
 }
 
-# ECS Task Definition with environment variables
+# ECS Task Definition BE application
 resource "aws_ecs_task_definition" "app" {
   family                   = var.task_family
   network_mode             = "awsvpc"
@@ -351,149 +349,12 @@ resource "aws_ecs_task_definition" "app" {
   depends_on = [aws_db_instance.mysql]
 }
 
-# --------------------------------- ALB Load Balancer ---------------------------------
-resource "aws_lb_target_group" "app" {
-  name        = "${var.vpc_prefix}-tg"
-  port        = var.container_port
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
-  target_type = "ip"
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 3
-    timeout             = 30
-    interval            = 60
-    path                = "/actuator/health"
-    port                = var.container_port
-  }
-
-  tags = {
-    Name = "${var.vpc_prefix}-target-group"
-  }
-}
-
-# Application Load Balancer
-resource "aws_lb" "app" {
-  name               = "${var.vpc_prefix}-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = aws_subnet.public[*].id
-
-  tags = {
-    Name = "${var.vpc_prefix}-alb"
-  }
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# ALB Security Group
-resource "aws_security_group" "alb" {
-  name        = "${var.vpc_prefix}-alb-sg"
-  description = "ALB Security Group"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.vpc_prefix}-alb-sg"
-  }
-}
-# --------------------------------- ALB HTTPS/Certificate ---------------------------------
-
-# Generate private key
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
-
-# Generate self-signed certificate
-resource "tls_self_signed_cert" "certificate" {
-  private_key_pem = tls_private_key.private_key.private_key_pem
-
-  subject {
-    common_name  = aws_lb.app.dns_name
-    organization = "Ilker Atik"
-    country      = "PT"
-    locality     = "Aveiro"
-    province     = "Aveiro"
-  }
-
-  validity_period_hours = 2160 # 90 days
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-    "server_auth",
-  ]
-}
-
-# Import certificate to ACM
-resource "aws_acm_certificate" "cert" {
-  private_key      = tls_private_key.private_key.private_key_pem
-  certificate_body = tls_self_signed_cert.certificate.cert_pem
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# HTTPS Listener
-resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.app.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate.cert.arn
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app.arn
-  }
-
-  depends_on = [aws_lb_target_group.app]
-}
-
-# HTTP Listener
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.app.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app.arn
-  }
-
-  depends_on = [aws_lb_target_group.app]
-}
-
-# --------------------------------- BE ECS Service ---------------------------------
+# ECS Service BE application
 resource "aws_ecs_service" "app" {
   name            = "${var.vpc_prefix}-app-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 1
+  desired_count   = 2
   launch_type     = "FARGATE"
 
   network_configuration {
@@ -518,56 +379,37 @@ resource "aws_ecs_service" "app" {
   ]
 }
 
-# --------------------------------- Cognito Client / ELB Callback Binding ---------------------------------
-data "aws_cognito_user_pools" "existing" {
-  name = var.cognito_user_pool_name
-}
+# Target Group BE application
+resource "aws_lb_target_group" "app" {
+  name        = "${var.vpc_prefix}-tg"
+  port        = var.container_port
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.main.id
+  target_type = "ip"
 
-resource "aws_cognito_resource_server" "resource" {
-  identifier   = "api"
-  name         = "api"
-  user_pool_id = data.aws_cognito_user_pools.existing.ids[0]
-
-  scope {
-    scope_name        = "api"
-    scope_description = "API access"
-  }
-}
-
-resource "aws_cognito_user_pool_client" "app_client" {
-  name                                 = var.cognito_user_pool_client_name
-  user_pool_id                         = data.aws_cognito_user_pools.existing.ids[0]
-  generate_secret                      = true
-  callback_urls                        = var.callback_urls
-  allowed_oauth_flows                  = ["code"]
-  allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_scopes                 = var.oauth_scopes
-  supported_identity_providers         = ["COGNITO"]
-  explicit_auth_flows = [
-    "ALLOW_REFRESH_TOKEN_AUTH",
-    "ALLOW_USER_SRP_AUTH"
-  ]
-  refresh_token_validity = 30
-  access_token_validity  = 60
-  id_token_validity      = 60
-  token_validity_units {
-    refresh_token = "days"
-    access_token  = "minutes"
-    id_token      = "minutes"
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 30
+    interval            = 60
+    path                = "/actuator/health"
+    port                = var.container_port
   }
 
-  prevent_user_existence_errors = "ENABLED"
-  enable_token_revocation       = true
+  tags = {
+    Name = "${var.vpc_prefix}-target-group"
+  }
 }
 
 # --------------------------------- API Gateway ---------------------------------
+# Cognito Authorizer
 resource "aws_api_gateway_authorizer" "cognito" {
   name          = "cognito-authorizer"
   type          = "COGNITO_USER_POOLS"
   rest_api_id   = aws_api_gateway_rest_api.main.id
   provider_arns = [data.aws_cognito_user_pools.existing.arns[0]]
 }
-
+# API Definition
 resource "aws_api_gateway_rest_api" "main" {
   name = "Todo Application API Terra"
 
@@ -654,7 +496,7 @@ resource "aws_api_gateway_rest_api" "main" {
                 responseParameters = {
                   "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-origin'"
                   "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,GET,POST'"
-                  "method.response.header.Access-Control-Allow-Origin"      = "'${var.cors_allowed_origin}'"
+                  "method.response.header.Access-Control-Allow-Origin"      = "'https://es-ua.ddns.net'"
                   "method.response.header.Access-Control-Allow-Credentials" = "'true'"
                 }
               }
@@ -776,7 +618,7 @@ resource "aws_api_gateway_rest_api" "main" {
                 responseParameters = {
                   "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-origin'"
                   "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,GET,DELETE,PATCH'"
-                  "method.response.header.Access-Control-Allow-Origin"      = "'${var.cors_allowed_origin}'"
+                  "method.response.header.Access-Control-Allow-Origin"      = "'https://es-ua.ddns.net'"
                   "method.response.header.Access-Control-Allow-Credentials" = "'true'"
                 }
               }
@@ -824,7 +666,7 @@ resource "aws_api_gateway_rest_api" "main" {
                 responseParameters = {
                   "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-origin'"
                   "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,POST'"
-                  "method.response.header.Access-Control-Allow-Origin"      = "'${var.cors_allowed_origin}'"
+                  "method.response.header.Access-Control-Allow-Origin"      = "'https://es-ua.ddns.net'"
                   "method.response.header.Access-Control-Allow-Credentials" = "'true'"
                 }
               }
@@ -863,40 +705,263 @@ resource "aws_api_gateway_stage" "main" {
   }
 }
 
-# --------------------------------- Vercel deployment with environment vars ---------------------------------
-# Set environment variables
-resource "vercel_project_environment_variable" "api_url" {
-  project_id = var.vercel_project_id
-  key        = "REACT_APP_ui_API_URL"
-  value      = aws_api_gateway_stage.main.invoke_url
-  target     = ["production", "preview", "development"]
+# --------------------------------- UI APP on EC2 ---------------------------------
+# Security Group for EC2 instance
+resource "aws_security_group" "web_sg" {
+  name        = "web-sg"
+  description = "Allow HTTP traffic"
+  vpc_id      = aws_vpc.main.id # Replace with your VPC ID
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow SSH from anywhere (optional)
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
-resource "vercel_project_environment_variable" "cognito_client_id" {
-  project_id = var.vercel_project_id
+# EC2 Instance to host the UI app
+resource "aws_instance" "web_server" {
+  ami           = "ami-04505e74c0741db8d"
+  instance_type = "t2.micro"
+  key_name      = "vockey"
 
-  key    = "REACT_APP_ui_COGNITO_CLIENT_ID"
-  value  = aws_cognito_user_pool_client.app_client.id
-  target = ["production", "preview", "development"]
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  subnet_id              = aws_subnet.public[0].id
+
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt-get update -y
+              sudo apt-get install -y nginx git curl
+
+              # Create a swap file - this is needed for small instances
+              sudo fallocate -l 1G /swapfile
+              sudo chmod 600 /swapfile
+              sudo mkswap /swapfile
+              sudo swapon /swapfile
+
+              # Install Node.js using NVM (Node Version Manager)
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+              # Source NVM properly before using it in this session
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+              nvm install --lts
+
+              # Clone your UI app repository from GitHub (replace with your own repo)
+              git clone https://github.com/ilkeratik/todo-app-ui.git /home/ubuntu/ui-app
+
+              # Set environment variables for React app (replace with actual values)
+              export REACT_APP_API_URL=${aws_api_gateway_stage.main.invoke_url}
+              export REACT_APP_COGNITO_CLIENT_ID=${aws_cognito_user_pool_client.app_client.id}
+
+              sudo chown -R ubuntu:ubuntu /home/ubuntu/ui-app
+
+              cd /home/ubuntu/ui-app || exit 1
+
+              npm install || exit 1
+              npm run build || exit 1
+
+              # Remove default Nginx files and copy build files to Nginx directory
+              sudo rm -rf /var/www/html/*
+              sudo cp -r /home/ubuntu/ui-app/build/* /var/www/html/
+
+              # Update Nginx configuration to handle client-side routing for React Router
+              sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOL
+              server {
+                  listen 80 default_server;
+                  listen [::]:80 default_server;
+
+                  root /var/www/html;
+                  index index.html;
+
+                  server_name _;
+
+                  location / {
+                      try_files \$uri /index.html;
+                  }
+              }
+              EOL'
+
+              # Restart Nginx to apply the new configuration
+              sudo systemctl restart nginx
+
+              echo "UI App deployed successfully!"
+            EOF
+
+  tags = {
+    Name = "UI-App-Server"
+  }
 }
 
-# Trigger deployment
-resource "vercel_deployment" "terraformx" {
-  project_id = var.vercel_project_id
-  production = true
-  ref        = "master"
+# Target Group for EC2 Instance
+resource "aws_lb_target_group" "ui_tg" {
+  name        = "ui-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.main.id
+  target_type = "instance"
 
+  health_check {
+    path                = "/"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    matcher             = "200-399"
+  }
+
+}
+
+# Register the EC2 instance to the Target Group
+resource "aws_lb_target_group_attachment" "tg_attachment" {
+  target_group_arn = aws_lb_target_group.ui_tg.arn
+  target_id        = aws_instance.web_server.id
+  port             = "80"
+}
+
+# --------------------------------- Cognito Client / ELB Callback Binding ---------------------------------
+data "aws_cognito_user_pools" "existing" {
+  name = var.cognito_user_pool_name
+}
+
+resource "aws_cognito_resource_server" "resource" {
+  identifier   = "api"
+  name         = "api"
+  user_pool_id = data.aws_cognito_user_pools.existing.ids[0]
+
+  scope {
+    scope_name        = "api"
+    scope_description = "API access"
+  }
+}
+
+resource "aws_cognito_user_pool_client" "app_client" {
+  name                                 = var.cognito_user_pool_client_name
+  user_pool_id                         = data.aws_cognito_user_pools.existing.ids[0]
+  generate_secret                      = true
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_scopes                 = var.oauth_scopes
+  supported_identity_providers         = ["COGNITO"]
+  explicit_auth_flows = [
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_SRP_AUTH"
+  ]
+  callback_urls = concat(var.callback_urls, [
+    "https://${aws_lb.app.dns_name}/auth/callback",
+    "https://${aws_lb.app.dns_name}/login-callback",
+    "https://es-ua.ddns.net/login-callback"
+  ])
+
+  refresh_token_validity = 30
+  access_token_validity  = 60
+  id_token_validity      = 60
+  token_validity_units {
+    refresh_token = "days"
+    access_token  = "minutes"
+    id_token      = "minutes"
+  }
+
+  prevent_user_existence_errors = "ENABLED"
+  enable_token_revocation       = true
+
+  depends_on = [aws_cognito_resource_server.resource]
+}
+
+# --------------------------------- ALB Configuration ---------------------------------
+# Application Load Balancer
+resource "aws_lb" "app" {
+  name               = "${var.vpc_prefix}-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = aws_subnet.public[*].id
+
+  tags = {
+    Name = "${var.vpc_prefix}-alb"
+  }
   lifecycle {
     create_before_destroy = true
   }
-  # This ensures deployment happens after env vars are set
-  depends_on = [
-    aws_ecs_service.app,
-    aws_api_gateway_stage.main,
-    vercel_project_environment_variable.api_url,
-    vercel_project_environment_variable.cognito_client_id
-  ]
 }
+
+# ALB Security Group
+resource "aws_security_group" "alb" {
+  name        = "${var.vpc_prefix}-alb-sg"
+  description = "ALB Security Group"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.vpc_prefix}-alb-sg"
+  }
+}
+
+# HTTPS Listener -- For UI
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:us-east-1:834198886233:certificate/68c0426f-790f-4186-95fd-3da963a0fd4a"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ui_tg.arn
+  }
+
+  depends_on = [aws_lb_target_group.ui_tg]
+}
+
+# HTTP Listener -- For API
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app.arn
+  }
+
+  depends_on = [aws_lb_target_group.app]
+}
+
 # --------------------------------- Outputs ---------------------------------
 
 output "apigw_dns_name" {
