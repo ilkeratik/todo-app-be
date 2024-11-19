@@ -27,10 +27,7 @@ springdoc:
   default-produces-media-type: application/json
 
 cognito:
-  client-id: ENC(qe1RRABknyyqt63iZwYPskWu6HBjvDfMt+mI5Z0/LECelmtvpBU/N8NFED09YcFtus/J4HmLMaXl+UuSoUuK9Q==)
-  client-secret: ENC(YM4znh3oAsO3W22F/NcW0tTnsjWyqZJS8kW03XQ4eAEu8aVzX8QRrK6X26qYeaAMtSloN6qPxDimqmLCGrn5g3PfMoXbfocswPEHyaPChw1U9TsC9H4OGxnkW3VwsTcX)
   domain: ENC(y6JH6ypGYH5o4NbwKPrW7tbS4Oa201Bm0q8Yf0dPWf1ZSYLkuJFtzi6b2tfKiTYBX5Ky4/T8Nj1B8EZPf6s4wkIwRgi83qA8ol70Cn+K3ys=)
-
 
 jasypt:
   encryptor:
