@@ -496,7 +496,7 @@ resource "aws_api_gateway_rest_api" "main" {
                 responseParameters = {
                   "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-origin'"
                   "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,GET,POST'"
-                  "method.response.header.Access-Control-Allow-Origin"      = "'https://es-ua.ddns.net'"
+                  "method.response.header.Access-Control-Allow-Origin"      = "'${var.cors_allowed_origin}'"
                   "method.response.header.Access-Control-Allow-Credentials" = "'true'"
                 }
               }
@@ -618,7 +618,7 @@ resource "aws_api_gateway_rest_api" "main" {
                 responseParameters = {
                   "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-origin'"
                   "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,GET,DELETE,PATCH'"
-                  "method.response.header.Access-Control-Allow-Origin"      = "'https://es-ua.ddns.net'"
+                  "method.response.header.Access-Control-Allow-Origin"      = "'${var.cors_allowed_origin}'"
                   "method.response.header.Access-Control-Allow-Credentials" = "'true'"
                 }
               }
@@ -666,7 +666,7 @@ resource "aws_api_gateway_rest_api" "main" {
                 responseParameters = {
                   "method.response.header.Access-Control-Allow-Headers"     = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-origin'"
                   "method.response.header.Access-Control-Allow-Methods"     = "'OPTIONS,POST'"
-                  "method.response.header.Access-Control-Allow-Origin"      = "'https://es-ua.ddns.net'"
+                  "method.response.header.Access-Control-Allow-Origin"      = "'${var.cors_allowed_origin}'"
                   "method.response.header.Access-Control-Allow-Credentials" = "'true'"
                 }
               }
@@ -865,7 +865,7 @@ resource "aws_cognito_user_pool_client" "app_client" {
   callback_urls = concat(var.callback_urls, [
     "https://${aws_lb.app.dns_name}/auth/callback",
     "https://${aws_lb.app.dns_name}/login-callback",
-    "https://es-ua.ddns.net/login-callback"
+    "${var.cors_allowed_origin}/login-callback"
   ])
 
   refresh_token_validity = 30
