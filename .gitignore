@@ -33,7 +33,6 @@ build/
 .vscode/
 
 # Terraform
-.terraform/
 *.tfstate
 *.tfstate.*
 *.tfvars
