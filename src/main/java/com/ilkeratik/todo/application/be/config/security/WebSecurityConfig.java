@@ -1,6 +1,5 @@
 package com.ilkeratik.todo.application.be.config.security;
 
-import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,7 @@ public class WebSecurityConfig {
         // Disable session creation
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth ->
-            auth.requestMatchers("/api/v1/auth/token", "/v3/api-docs/**", 
+            auth.requestMatchers("/api/v1/auth/token", "/v3/api-docs/**",
                     "/actuator/health",
                     "/swagger-ui/**",
                     "/swagger-ui.html")
