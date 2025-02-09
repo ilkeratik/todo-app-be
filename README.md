@@ -4,7 +4,7 @@
 - The application allows users to create to-do’s with titles, descriptions, images, categories, priorities, set deadlines and completion status. Users can update or delete specific to-do item, and on the to-do’s dashboard, can view all to-do’s in an organized way, apply filters and sort their to-do’s based on criterias including creation date, deadline, category, priority and completion status.
 
 ## CI / CD
-The project utilizes an automated CI/CD pipeline using GitHub Actions, SonarQube DockerHub, and Terraform. The pipeline has two parts, first, build and deploy image whenever changes were pushed to the master branch, second, use the latest docker image on Task Definiton part of the Terraform script and integrate other infrastructure elements.
+The project utilizes an automated CI/CD pipeline using GitHub Actions, SonarQube, DockerHub, and Terraform. The pipeline has two parts, first, build and deploy image whenever changes were pushed to the master branch, second, use the latest docker image on Task Definiton part of the Terraform script and integrate other infrastructure elements.
 ### GitHub Actions: 
 The pipeline was triggered on code pushes to the master branch. The GitHub Actions workflow was responsible for:
 - Checking out the latest code.
