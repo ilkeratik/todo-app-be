@@ -3,39 +3,6 @@
 - The resulting web application enables users to authenticate through AWS Cognito and manage their personal to-do’s through an user-friendly UI. 
 - The application allows users to create to-do’s with titles, descriptions, images, categories, priorities, set deadlines and completion status. Users can update or delete specific to-do item, and on the to-do’s dashboard, can view all to-do’s in an organized way, apply filters and sort their to-do’s based on criterias including creation date, deadline, category, priority and completion status.
 
-## Sprints Overview
-The project is completed in two sprints focusing on different aspects of the application:
-### Sprint 1: Infrastructure Setup and Authentication:
- This sprint focused on setting up the cloud infrastructure using AWS services and implementing user authentication using AWS Cognito.
-### Sprint 2: Core To-Do Management Features:
- The second sprint focused on developing the core functionality of the to-do list application, including CRUD operations for to-do items and frontend-backend integration.
-## Epics and User Stories
-The project was divided into three main epics:
-### Epic: Application Design
-- TODOAPP-1: Create application architecture diagram
-- TODOAPP-15: Backend application deployment and configuration on cloud
-- TODOAPP-16: CI/CD and IAC script generation using Terraform
-### Epic: IDP Login
-- TODOAPP-4: Allow users to authenticate via AWS Cognito (IDP Login)
-### Epic: Application Functions Development
-- TODOAPP-7: Allow users to add new to-do items and the details including title, description, priority, and an image
-- TODOAPP-9: Allow users to view their to-do items in an organized way enabling them to filter, sort, and group them
-- TODOAPP-8: Allow users to change details of to-do items such as title, description, status, deadline, and priority
-
-## Definition of Ready  and Definition of Done 
-To ensure that stories were well-defined before work began and properly completed once development was finished, stated standards for Definition of Ready (DoR) and Definition of Done (DoD) as below:
-
-### Definition of Ready (DoR):
-- Explicit Title: Each task had a clear, concise title that described the task or feature.
-- Clear Description: Each task included a user story written in the format: "As a ..., I want to ..., so that...".
-- Story Points Estimation: Each task was estimated using story points to indicate complexity and effort.
-- No Blockers: Tasks were only marked as ready if there were no blockers preventing them from being started.
-
-### Definition of Done (DoD):
-- Implemented: The feature was fully developed and integrated into the application.
-- Documented: The feature was documented, ensuring clarity and ease of understanding.
-- Passes CI and Build: The feature passed all CI pipeline checks and build steps.
-
 ## CI / CD
 The project utilizes an automated CI/CD pipeline using GitHub Actions, DockerHub, and Terraform. The pipeline has two parts, first, build and deploy image whenever changes were pushed to the master branch, second, use the latest docker image on Task Definiton part of the Terraform script and integrate other infrastructure elements.
 ### GitHub Actions: 
@@ -178,3 +145,36 @@ Only exception is /api/v1/auth/token endpoint which used to obtain access token 
     - Description: Deletes a specific to-do item by its ID.
     - Path Parameter: id: The unique identifier of the to-do item to be deleted.
     - Response: A confirmation message that the to-do item was successfully deleted or error details.
+ 
+## Sprints Overview
+The project is completed in two sprints focusing on different aspects of the application:
+### Sprint 1: Infrastructure Setup and Authentication:
+ This sprint focused on setting up the cloud infrastructure using AWS services and implementing user authentication using AWS Cognito.
+### Sprint 2: Core To-Do Management Features:
+ The second sprint focused on developing the core functionality of the to-do list application, including CRUD operations for to-do items and frontend-backend integration.
+## Epics and User Stories
+The project was divided into three main epics:
+### Epic: Application Design
+- TODOAPP-1: Create application architecture diagram
+- TODOAPP-15: Backend application deployment and configuration on cloud
+- TODOAPP-16: CI/CD and IAC script generation using Terraform
+### Epic: IDP Login
+- TODOAPP-4: Allow users to authenticate via AWS Cognito (IDP Login)
+### Epic: Application Functions Development
+- TODOAPP-7: Allow users to add new to-do items and the details including title, description, priority, and an image
+- TODOAPP-9: Allow users to view their to-do items in an organized way enabling them to filter, sort, and group them
+- TODOAPP-8: Allow users to change details of to-do items such as title, description, status, deadline, and priority
+
+## Definition of Ready  and Definition of Done 
+To ensure that stories were well-defined before work began and properly completed once development was finished, stated standards for Definition of Ready (DoR) and Definition of Done (DoD) as below:
+
+### Definition of Ready (DoR):
+- Explicit Title: Each task had a clear, concise title that described the task or feature.
+- Clear Description: Each task included a user story written in the format: "As a ..., I want to ..., so that...".
+- Story Points Estimation: Each task was estimated using story points to indicate complexity and effort.
+- No Blockers: Tasks were only marked as ready if there were no blockers preventing them from being started.
+
+### Definition of Done (DoD):
+- Implemented: The feature was fully developed and integrated into the application.
+- Documented: The feature was documented, ensuring clarity and ease of understanding.
+- Passes CI and Build: The feature passed all CI pipeline checks and build steps.
